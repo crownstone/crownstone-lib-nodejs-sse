@@ -45,10 +45,18 @@ interface PresenceLocationEvent {
 
 interface DataChangeEvent {
   type:        "dataChange",
-  subType:     "user"   | "spheres" | "stones" | "locations",
+  subType:     "users"   | "spheres" | "stones" | "locations",
   operation:   "create" | "delete"  | "update"
   sphere:      SphereData,
   changedItem: NameIdSet,
+}
+
+interface InvitationChangeEvent {
+  type:        "invitationChange",
+  subType:     "users",
+  operation:   "invited" | "invitationRevoked"
+  sphere:      SphereData,
+  email:       string,
 }
 
 interface NameIdSet {

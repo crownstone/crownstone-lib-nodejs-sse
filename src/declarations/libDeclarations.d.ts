@@ -4,4 +4,5 @@ type SseEvent = SystemEvent             |
                   SwitchCrownstoneEvent |
                   PresenceSphereEvent   |
                   PresenceLocationEvent |
-                  DataChangeEvent
+                  DataChangeEvent       |
+                  InvitationChangeEvent

@@ -190,7 +190,7 @@ These events are called if Spheres, Users in spheres, Locations or Crownstones a
 ```js
 interface DataChangeEvent {
   type:        "dataChange",
-  subType:     "user"   | "spheres" | "stones" | "locations",
+  subType:     "users"   | "spheres" | "stones" | "locations",
   operation:   "create" | "delete"  | "update"
   sphere:      SphereData,
   changedItem: NameIdSet,
@@ -210,6 +210,28 @@ interface NameIdSet {
 }
 ```
 
+
+### Invitation change events
+
+When someone is invited to a Sphere, or the invitation is revoked, these events are fired.
+
+```js
+interface InvitationChangeEvent {
+  type:        "invitationChange",
+  subType:     "users",
+  operation:   "invited" | "invitationRevoked"
+  sphere:      SphereData,
+  email:       string,
+}
+
+// With subtypes:
+
+interface SphereData {
+  id:   string,
+  uid:  number,
+  name: string,
+}
+```
 
 
 
