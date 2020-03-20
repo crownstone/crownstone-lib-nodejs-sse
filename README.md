@@ -9,6 +9,12 @@ Run Yarn to install the dependencies.
 yarn
 ```
 
+Compile the ts files to get started:
+
+```js
+npm run build
+```
+
 ## Usage
 
 There are two small examples showing you how to get started in the ./examples folder.
