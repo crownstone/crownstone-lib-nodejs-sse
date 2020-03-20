@@ -1,0 +1,16 @@
+{
+  "name": "bluenet-nodejs-lib-sse",
+  "version": "1.0.0",
+  "main": "./dist/server.js",
+  "scripts": {
+    "start": "tsc --watch",
+    "dev": "source start.sh",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "^13.9.2",
+    "cross-fetch": "^3.0.4",
+    "eventsource": "^1.0.7",
+    "typescript": "^3.7.5"
+  }
+}
