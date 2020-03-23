@@ -218,7 +218,6 @@ When someone is invited to a Sphere, or the invitation is revoked, these events 
 ```js
 interface InvitationChangeEvent {
   type:        "invitationChange",
-  subType:     "users",
   operation:   "invited" | "invitationRevoked"
   sphere:      SphereData,
   email:       string,

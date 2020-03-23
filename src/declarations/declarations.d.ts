@@ -53,7 +53,6 @@ interface DataChangeEvent {
 
 interface InvitationChangeEvent {
   type:        "invitationChange",
-  subType:     "users",
   operation:   "invited" | "invitationRevoked"
   sphere:      SphereData,
   email:       string,
