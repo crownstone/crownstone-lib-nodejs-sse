@@ -88,6 +88,11 @@ export class BluenetSSE {
       this.eventSource.onmessage = (event) => {
         if (event?.data) {
           let message = JSON.parse(event.data);
+          
+          // if (message.type === 'system' && message.code === 401 && message.subtype == "TOKEN_EXPIRED") {
+          //    // TODO: automatic log-in again and get a new token.
+          // }
+
           this.eventCallback(message as any);
         }
       };
