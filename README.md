@@ -1,4 +1,4 @@
-# bluenet-nodejs-lib-sse
+# crownstone-lib-nodejs-sse
 Tiny library to provide you with the SSE events from the Crownstone cloud.
 
 ## Installation
