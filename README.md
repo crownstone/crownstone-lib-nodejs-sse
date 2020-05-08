@@ -192,10 +192,21 @@ These events are called if Spheres, Users in spheres, Locations or Crownstones a
 interface DataChangeEvent {
   type:        "dataChange",
   subType:     "users"   | "spheres" | "stones" | "locations",
-  operation:   "create" | "delete"  | "update"
+  operation:   "create"  | "delete"  | "update"
   sphere:      SphereData,
   changedItem: NameIdSet,
 }
+
+// When a Crownstone was switched, you can get this one instead:
+
+interface SwitchStateUpdateEvent {
+  type:        "switchStateUpdate",
+  subtype:     "stone",
+  sphere:       SphereData,
+  crownstone:   CrownstoneData,
+}
+
+
 
 // With subtypes:
 
@@ -208,6 +219,14 @@ interface SphereData {
 interface NameIdSet {
   id:   string,
   name: string,
+}
+
+interface CrownstoneData {
+  id:   string,
+  uid:  number,
+  name: string,
+  switchState: number | null,
+  macAddress: string,
 }
 ```
 
