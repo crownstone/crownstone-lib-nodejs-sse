@@ -201,7 +201,7 @@ interface DataChangeEvent {
 
 interface SwitchStateUpdateEvent {
   type:        "switchStateUpdate",
-  subtype:     "stone",
+  subType:     "stone",
   sphere:       SphereData,
   crownstone:   CrownstoneData,
 }

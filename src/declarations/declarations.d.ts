@@ -12,11 +12,13 @@ interface AccessModel {
   userId: string,
   spheres: {
     [key: string] : { boolean }
-  }
+  },
+  scopes: string[]
 }
 
 interface SystemEvent {
   type:    "system",
+  subType:  "TOKEN_EXPIRED" | "NO_ACCESS_TOKEN" | "NO_CONNECTION" | "STREAM_START" | "STREAM_CLOSED",
   code:     number,
   message:  string,
 }
@@ -46,7 +48,7 @@ interface PresenceLocationEvent {
 interface DataChangeEvent {
   type:        "dataChange",
   subType:     "users"   | "spheres" | "stones" | "locations",
-  operation:   "create" | "delete"  | "update"
+  operation:   "create"  | "delete"  | "update"
   sphere:      SphereData,
   changedItem: NameIdSet,
 }
@@ -56,6 +58,12 @@ interface InvitationChangeEvent {
   operation:   "invited" | "invitationRevoked"
   sphere:      SphereData,
   email:       string,
+}
+interface SwitchStateUpdateEvent {
+  type:        'switchStateUpdate',
+  subType:     'stone',
+  sphere:       SphereData,
+  crownstone:   CrownstoneData,
 }
 
 interface NameIdSet {
@@ -72,11 +80,3 @@ interface CrownstoneData extends NameIdSet {
   macAddress: string,
   uid: number,
 }
-
-
-type RoutingMap = {
-  all: ArrayMap,
-  presence: ArrayMap,
-  command: ArrayMap,
-}
-type ArrayMap = { [key: string] : string[] }
