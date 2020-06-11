@@ -9,7 +9,7 @@ export const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-export class BluenetSSE {
+export class CrownstoneSSE {
 
   url : string;
   loginUrl : string = "https://cloud.crownstone.rocks/api/users/login"

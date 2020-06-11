@@ -1,6 +1,6 @@
 /// <reference path="./declarations/declarations.d.ts" />
 /// <reference path="./declarations/libDeclarations.d.ts" />
 
-import { BluenetSSE } from "./BluenetSSE";
+import { CrownstoneSSE } from "./CrownstoneSSE";
 
-export { BluenetSSE };
+export { CrownstoneSSE };

@@ -1,8 +1,8 @@
 // This is a tiny example on how you should use the library :)
 
-let BluenetSSE = require("../dist/index")
+let CsSse = require("../dist/index")
 
-let lib = new BluenetSSE.BluenetSSE();
+let lib = new CsSse.CrownstoneSSE();
 
 let eventHandler = (data) => {
   console.log("I got an event!", data);
