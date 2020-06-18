@@ -10,10 +10,10 @@ export const defaultHeaders = {
 };
 
 interface sseOptions {
-  sseUrl:      string,
-  loginUrl:    string,
-  hubLoginBase: string,
-  autoreconnect: boolean
+  sseUrl?:        string,
+  loginUrl?:      string,
+  hubLoginBase?:  string,
+  autoreconnect?: boolean
 };
 const DEFAULT_URLS = {
   sse:          "https://events.crownstone.rocks/sse",
