@@ -12,13 +12,13 @@ export const defaultHeaders = {
 interface sseOptions {
   sseUrl:      string,
   loginUrl:    string,
-  hubLoginUrl: string,
+  hubLoginBase: string,
   autoreconnect: boolean
 };
 const DEFAULT_URLS = {
-  sse:       "https://events.crownstone.rocks/sse",
-  login:     "https://cloud.crownstone.rocks/api/users/login",
-  hubLogin:  "https://cloud.crownstone.rocks/api/Hubs/login"
+  sse:          "https://events.crownstone.rocks/sse",
+  login:        "https://cloud.crownstone.rocks/api/users/login",
+  hubLoginBase: "https://cloud.crownstone.rocks/api/Hubs/"
 }
 
 export class CrownstoneSSE {
@@ -30,15 +30,16 @@ export class CrownstoneSSE {
   eventCallback : (data: SseEvent) => void;
   reconnectTimeout = null;
 
-  sse_url      = DEFAULT_URLS.sse;
-  login_url    = DEFAULT_URLS.login;
-  hubLogin_url = DEFAULT_URLS.hubLogin;
+  sse_url          = DEFAULT_URLS.sse;
+  login_url        = DEFAULT_URLS.login;
+  hubLogin_baseUrl = DEFAULT_URLS.hubLoginBase;
 
   constructor( options? : sseOptions ) {
-    this.sse_url       = options.sseUrl      || DEFAULT_URLS.sse;
-    this.login_url     = options.loginUrl    || DEFAULT_URLS.login;
-    this.hubLogin_url  = options.hubLoginUrl || DEFAULT_URLS.hubLogin;
-    this.autoreconnect = options.autoreconnect === undefined ? true : options.autoreconnect;
+    this.sse_url          = options && options.sseUrl       || DEFAULT_URLS.sse;
+    this.login_url        = options && options.loginUrl     || DEFAULT_URLS.login;
+    this.hubLogin_baseUrl = options && options.hubLoginBase || DEFAULT_URLS.hubLoginBase;
+    if (this.hubLogin_baseUrl.substr(-1,1) !== '/') { this.hubLogin_baseUrl += "/"; }
+    this.autoreconnect    = (options && options.autoreconnect !== undefined) ? options.autoreconnect : true;
   }
 
   async login(email, password) {
@@ -72,6 +73,37 @@ export class CrownstoneSSE {
         }
         else {
           console.error("Unknown error while trying to login to", this.login_url);
+          throw err;
+        }
+      })
+  }
+
+  async hubLogin(hubToken: string, hubId : string) {
+    let combinedUrl = this.hubLogin_baseUrl + hubId + '/login?token=' + hubToken;
+    return fetch(
+      combinedUrl,
+      {method:"POST", headers:defaultHeaders}
+    )
+      .then((result) => {
+        return result.json()
+      })
+      .then((result) => {
+        if (result?.error?.statusCode == 401) {
+          throw result.error
+        }
+        this.accessToken = result.id;
+      })
+      .catch((err) => {
+        if (err?.code === "LOGIN_FAILED_EMAIL_NOT_VERIFIED") {
+          console.info("This email address has not been verified yet.");
+          throw err;
+        }
+        else if (err?.code === "LOGIN_FAILED") {
+          console.info("Incorrect email/password");
+          throw err;
+        }
+        else {
+          console.error("Unknown error while trying to login to", combinedUrl);
           throw err;
         }
       })
