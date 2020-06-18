@@ -21,10 +21,10 @@ There are two small examples showing you how to get started in the ./examples fo
 
 ```js
 // import the library
-const sseLib = require("bluenet-nodejs-lib-sse")
+const sseLib = require("crownstone-sse")
 
 // initialize the library
-let sse = new sseLib.BluenetSSE();
+let sse = new sseLib.CrownstoneSSE();
 
 // create a callback function to print incoming data
 let eventHandler = (data) => {
@@ -65,16 +65,16 @@ There is a promise based example as well.
 You can require the library like so:
 ```
 // import the library
-const sseLib = require("bluenet-nodejs-lib-sse")
+const sseLib = require("crownstone-sse")
 
 // initialize the library
-let sse = new sseLib.BluenetSSE();
+let sse = new sseLib.CrownstoneSSE();
 ```
 
 or import it like so: 
 
 ```js
-import { BluenetSSE } from "bluenet-nodejs-lib-sse"
+import { CrownstoneSSE } from "crownstone-sse"
 
 let sse = new BluenetSSE();
 ```

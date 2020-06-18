@@ -9,10 +9,18 @@ export const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-export class CrownstoneSSE {
+interface CloudUrls {
+  sse:      string,
+  login:    string,
+  hubLogin: string,
+};
+const DEFAULT_URLS = {
+  sse:       "https://events.crownstone.rocks/sse",
+  login:     "https://cloud.crownstone.rocks/api/users/login",
+  hubLogin:  "https://cloud.crownstone.rocks/api/Hubs/login"
+}
 
-  url : string;
-  loginUrl : string = "https://cloud.crownstone.rocks/api/users/login"
+export class CrownstoneSSE {
   autoreconnect : boolean = false;
 
   eventSource : EventSource = null;
@@ -21,8 +29,14 @@ export class CrownstoneSSE {
   eventCallback : (data: SseEvent) => void;
   reconnectTimeout = null;
 
-  constructor(autoreconnect= true, url="https://events.crownstone.rocks/sse") {
-    this.url = url;
+  sse_url      = DEFAULT_URLS.sse;
+  login_url    = DEFAULT_URLS.login;
+  hubLogin_url = DEFAULT_URLS.hubLogin;
+
+  constructor( autoreconnect= true, customUrls : CloudUrls ) {
+    this.sse_url       = customUrls.sse      || DEFAULT_URLS.sse;
+    this.login_url     = customUrls.login    || DEFAULT_URLS.login;
+    this.hubLogin_url  = customUrls.hubLogin || DEFAULT_URLS.hubLogin;
     this.autoreconnect = autoreconnect;
   }
 
@@ -34,7 +48,7 @@ export class CrownstoneSSE {
 
   async loginHashed(email, sha1passwordHash) {
     return fetch(
-      this.loginUrl,
+      this.login_url,
       {method:"POST", headers:defaultHeaders, body: JSON.stringify({email, password:sha1passwordHash})}
       )
       .then((result) => {
@@ -56,18 +70,17 @@ export class CrownstoneSSE {
           throw err;
         }
         else {
-          console.error("Unknown error while trying to login to", this.loginUrl);
+          console.error("Unknown error while trying to login to", this.login_url);
           throw err;
         }
       })
-
   }
 
   setAccessToken(token) {
     this.accessToken = token;
   }
 
-  async start(eventCallback : (data) => void) {
+  async start(eventCallback : (data : SseEvent) => void) : Promise<void> {
     if (this.accessToken === null) {
       throw "AccessToken is required. Use .setAccessToken() or .login() to set one."
     }
@@ -80,7 +93,7 @@ export class CrownstoneSSE {
       this.eventSource.close();
     }
     return new Promise((resolve, reject) => {
-      this.eventSource = new EventSource(this.url + "?accessToken=" + this.accessToken);
+      this.eventSource = new EventSource(this.sse_url + "?accessToken=" + this.accessToken);
       this.eventSource.onopen = (event) => {
         console.log("Connection is open.");
         resolve();
