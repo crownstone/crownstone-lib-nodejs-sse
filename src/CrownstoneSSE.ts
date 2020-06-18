@@ -9,10 +9,11 @@ export const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-interface CloudUrls {
-  sse:      string,
-  login:    string,
-  hubLogin: string,
+interface sseOptions {
+  sseUrl:      string,
+  loginUrl:    string,
+  hubLoginUrl: string,
+  autoreconnect: boolean
 };
 const DEFAULT_URLS = {
   sse:       "https://events.crownstone.rocks/sse",
@@ -33,11 +34,11 @@ export class CrownstoneSSE {
   login_url    = DEFAULT_URLS.login;
   hubLogin_url = DEFAULT_URLS.hubLogin;
 
-  constructor( autoreconnect= true, customUrls : CloudUrls ) {
-    this.sse_url       = customUrls.sse      || DEFAULT_URLS.sse;
-    this.login_url     = customUrls.login    || DEFAULT_URLS.login;
-    this.hubLogin_url  = customUrls.hubLogin || DEFAULT_URLS.hubLogin;
-    this.autoreconnect = autoreconnect;
+  constructor( options? : sseOptions ) {
+    this.sse_url       = options.sseUrl      || DEFAULT_URLS.sse;
+    this.login_url     = options.loginUrl    || DEFAULT_URLS.login;
+    this.hubLogin_url  = options.hubLoginUrl || DEFAULT_URLS.hubLogin;
+    this.autoreconnect = options.autoreconnect === undefined ? true : options.autoreconnect;
   }
 
   async login(email, password) {
