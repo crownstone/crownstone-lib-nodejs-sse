@@ -34,6 +34,8 @@ export class CrownstoneSSE {
   login_url        = DEFAULT_URLS.login;
   hubLogin_baseUrl = DEFAULT_URLS.hubLoginBase;
 
+  cachedLoginData = {}
+
   constructor( options? : sseOptions ) {
     this.sse_url          = options && options.sseUrl       || DEFAULT_URLS.sse;
     this.login_url        = options && options.loginUrl     || DEFAULT_URLS.login;
@@ -49,6 +51,7 @@ export class CrownstoneSSE {
   }
 
   async loginHashed(email, sha1passwordHash) {
+    this.cachedLoginData = {...this.cachedLoginData, user: {email: email, hashedPassword: sha1passwordHash}};
     return fetch(
       this.login_url,
       {method:"POST", headers:defaultHeaders, body: JSON.stringify({email, password:sha1passwordHash})}
@@ -78,7 +81,8 @@ export class CrownstoneSSE {
       })
   }
 
-  async hubLogin(hubToken: string, hubId : string) {
+  async hubLogin(hubId : string, hubToken: string) {
+    this.cachedLoginData = {...this.cachedLoginData, hub: {hubId: hubId, hubToken: hubToken}};
     let combinedUrl = this.hubLogin_baseUrl + hubId + '/login?token=' + hubToken;
     return fetch(
       combinedUrl,

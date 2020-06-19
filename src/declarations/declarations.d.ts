@@ -16,6 +16,7 @@ interface AccessModel {
   scopes: string[]
 }
 
+
 interface SystemEvent {
   type:    "system",
   subType:  "TOKEN_EXPIRED" | "NO_ACCESS_TOKEN" | "NO_CONNECTION" | "STREAM_START" | "STREAM_CLOSED",
@@ -53,6 +54,14 @@ interface DataChangeEvent {
   changedItem: NameIdSet,
 }
 
+interface AbilityChangeEvent {
+  type:        "abilityChange",
+  subType:     "dimming"   | "switchcraft" | "tapToToggle",
+  sphere:      SphereData,
+  stone:       CrownstoneData,
+  ability:     AbilityData
+}
+
 interface InvitationChangeEvent {
   type:        "invitationChange",
   operation:   "invited" | "invitationRevoked"
@@ -80,3 +89,17 @@ interface CrownstoneData extends NameIdSet {
   macAddress: string,
   uid: number,
 }
+
+interface AbilityData {
+  type: string,
+  enabled: boolean,
+  syncedToCrownstone: boolean,
+}
+
+
+type RoutingMap = {
+  all: ArrayMap,
+  presence: ArrayMap,
+  command: ArrayMap,
+}
+type ArrayMap = { [key: string] : string[] }

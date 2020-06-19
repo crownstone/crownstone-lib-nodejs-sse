@@ -206,6 +206,14 @@ interface SwitchStateUpdateEvent {
   crownstone:   CrownstoneData,
 }
 
+// when the Crownstone's abilities have been updated
+interface AbilityChangeEvent {
+  type:        "abilityChange",
+  subType:     "dimming"   | "switchcraft" | "tapToToggle",
+  sphere:      SphereData,
+  stone:       CrownstoneData,
+  ability:     AbilityData
+}
 
 
 // With subtypes:
@@ -227,6 +235,12 @@ interface CrownstoneData {
   name: string,
   switchState: number | null,
   macAddress: string,
+}
+
+interface AbilityData {
+  type: string,
+  enabled: boolean,
+  syncedToCrownstone: boolean,
 }
 ```
 
