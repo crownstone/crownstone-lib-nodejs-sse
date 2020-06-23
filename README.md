@@ -216,6 +216,17 @@ interface AbilityChangeEvent {
 }
 
 
+// When the sphereAuthorizationTokens have been cycled (only relevant for Crownstone hub)
+interface SphereTokensUpdatedEvent {
+  type:        "sphereTokensChanged",
+  subType:     "sphereAuthorizationTokens",
+  operation:   "update"
+  sphere:      SphereData
+}
+
+
+
+
 // With subtypes:
 
 interface SphereData {
