@@ -1,8 +1,10 @@
 
 
-type SseEvent = SystemEvent             |
-                  SwitchCrownstoneEvent |
-                  PresenceSphereEvent   |
-                  PresenceLocationEvent |
-                  DataChangeEvent       |
+type SseEvent = SystemEvent              |
+                  SwitchStateUpdateEvent |
+                  SwitchCrownstoneEvent  |
+                  PresenceSphereEvent    |
+                  PresenceLocationEvent  |
+                  DataChangeEvent        |
+                  AbilityChangeEvent     |
                   InvitationChangeEvent
