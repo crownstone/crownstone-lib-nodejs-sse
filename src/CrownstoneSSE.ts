@@ -117,6 +117,16 @@ export class CrownstoneSSE {
     this.accessToken = token;
   }
 
+
+  stop() {
+    clearTimeout(this.reconnectTimeout)
+    this.autoreconnect = false;
+    if (this.eventSource !== null) {
+      this.eventSource.close();
+    }
+  }
+
+
   async start(eventCallback : (data : SseEvent) => void) : Promise<void> {
     if (this.accessToken === null) {
       throw "AccessToken is required. Use .setAccessToken() or .login() to set one."

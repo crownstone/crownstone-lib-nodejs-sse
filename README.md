@@ -98,6 +98,10 @@ Starting the event stream after you have ensured there is an accessToken in the 
 > Connect to https://events.crownstone.rocks/sse and forwards all events to your callback.
 >
 
+#### stop()
+> Close the connection. Autoreconnect will be disabled as well. This is meant for destroying the SSE lib.
+>
+
 ## Events
 
 There are a number of different events you can expect from this service.
