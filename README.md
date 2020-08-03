@@ -108,7 +108,7 @@ There are a number of different events you can expect from this service.
 
 ### System Events
 
-These are used to notify you of the opening, closing and any errors with the event stream. The format of these is:
+These are used to notify you of the opening, closing and any errors with the event stream. The ping event is sent every 30 seconds with an incrementing counter. The format of these is:
 ```js
 interface SystemEvent {
   type:    "system",
@@ -116,18 +116,33 @@ interface SystemEvent {
   code:     number,
   message:  string,
 }
+
+interface PingEvent {
+  type:    "ping",
+  counter:  number,
+}
 ```
 
 ### Command Events
 
-These notify actuators that they should so something. Currently there is only one for switching a Crownstone. 
-A hub could use this to switch a Crownstone based on a call from [https://my.crownstone.rocks/api/Stones/id/setSwitchStateRemotely](https://my.crownstone.rocks/api/Stones/{id}/setSwitchStateRemotely).
+These notify actuators that they should so something. 
+
+A hub could use this to switch a Crownstone based on a call from the cloud.
+- (legacy) The [https://my.crownstone.rocks/api/Stones/id/setSwitchStateRemotely](https://my.crownstone.rocks/api/Stones/{id}/setSwitchStateRemotely) endpoint triggers the switchCrownstone event.
+- The [https://my.crownstone.rocks/api/Spheres/id/switchCrownstones](https://my.crownstone.rocks/api/Spheres/id/switchCrownstones) endpoint triggers the multiSwitch event.
 ```js
 interface SwitchCrownstoneEvent {
-  type:       "command",
-  subType:    "switchCrownstone"
-  sphere:     SphereData,
-  crownstone: CrownstoneData,
+  type:        "command",
+  subType:     "switchCrownstone"
+  sphere:      SphereData,
+  crownstone:  LegacySwitchData,
+}
+
+interface MultiSwitchCrownstoneEvent {
+  type:        "command",
+  subType:     "multiSwitch"
+  sphere:      SphereData,
+  switchData:  CrownstoneSwitchData[],
 }
 
 // With subtypes:
@@ -142,8 +157,12 @@ interface CrownstoneData {
   id:   string,
   uid:  number,
   name: string,
-  switchState: number | null,
+  switchState: number | null, // 0 .. 1
   macAddress: string,
+}
+
+interface CrownstoneSwitchData extends CrownstoneData {
+  type: "TURN_ON" | "TURN_OFF" | "DIMMING"
 }
 ```
 
