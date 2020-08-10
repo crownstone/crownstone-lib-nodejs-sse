@@ -1,7 +1,8 @@
 {
   "name": "crownstone-sse",
   "version": "3.0.0",
-  "main": "./dist/server.js",
+  "main": "./dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "tsc --watch",
     "dev": "source start.sh",
