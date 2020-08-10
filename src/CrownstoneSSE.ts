@@ -215,7 +215,7 @@ export class CrownstoneSSE {
           // attempt to automatically reconnect if the token has expired.
           if (this.autoreconnect && message.type === 'system' && message.code === 401 && message.subtype == "TOKEN_EXPIRED" && this.cachedLoginData) {
             this._clearPendingActions();
-            this.eventSource.close()
+            this.eventSource.close();
             try {
               return this.retryLogin()
                 .then(() => {
