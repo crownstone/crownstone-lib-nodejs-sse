@@ -162,7 +162,7 @@ interface CrownstoneData {
 }
 
 interface CrownstoneSwitchData extends CrownstoneData {
-  type: "TURN_ON" | "TURN_OFF" | "DIMMING"
+  type: "TURN_ON" | "TURN_OFF" | "PERCENTAGE"
 }
 ```
 
