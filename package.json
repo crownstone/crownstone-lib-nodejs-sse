@@ -1,20 +1,21 @@
 {
   "name": "crownstone-sse",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "tsc --watch",
     "dev": "source start.sh",
-    "build": "tsc"
+    "build": "rimraf ./dist && tsc"
   },
   "dependencies": {
+    "crownstone-core": "^0.7.5",
     "cross-fetch": "^3.0.4",
-    "debug-level": "^0.3.1",
     "eventsource": "^1.0.7",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
-    "@types/node": "^13.9.2"
+    "@types/node": "^14.11.2"
   }
 }

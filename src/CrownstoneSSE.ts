@@ -4,8 +4,9 @@ const crypto = require('crypto');
 import EventSource from "eventsource"
 const shasum = crypto.createHash('sha1');
 import fetch from 'cross-fetch';
+import {Logger} from "./Logger";
 
-const LOG = require('debug-level')('crownstone-sse-core')
+const log = Logger(__filename);
 
 export const defaultHeaders = {
   'Accept': 'application/json',
@@ -32,6 +33,8 @@ const DEFAULT_URLS = {
 }
 
 export class CrownstoneSSE {
+  log = log;
+
   autoreconnect    : boolean       = false;
 
   eventSource      : EventSource   = null;
@@ -77,10 +80,10 @@ export class CrownstoneSSE {
           throw result.error
         }
         this.accessToken = result.id;
-        LOG.info("SSE user login successful.");
+        log.info("SSE user login successful.");
       })
       .catch((err) => {
-        LOG.warn("SSE user login failed.", err);
+        log.warn("SSE user login failed.", err);
         if (err?.code === "LOGIN_FAILED_EMAIL_NOT_VERIFIED") {
           console.info("This email address has not been verified yet.");
           throw err;
@@ -111,10 +114,10 @@ export class CrownstoneSSE {
           throw result.error
         }
         this.accessToken = result.id;
-        LOG.info("SSE hub login successful.");
+        log.info("SSE hub login successful.");
       })
       .catch((err) => {
-        LOG.warn("SSE hub login failed.", err);
+        log.warn("SSE hub login failed.", err);
         if (err?.code === "LOGIN_FAILED") {
           console.info("Incorrect email/password");
           throw err;
@@ -181,7 +184,7 @@ export class CrownstoneSSE {
     this._clearPendingActions();
 
     if (this.eventSource !== null) {
-      LOG.info("Event source closed before starting again.");
+      log.info("Event source closed before starting again.");
       this.eventSource.close();
     }
 
@@ -189,13 +192,13 @@ export class CrownstoneSSE {
       this.eventSource = new EventSource(this.sse_url + "?accessToken=" + this.accessToken);
       this.eventSource.onopen = (event) => {
         console.log("Connection is open.");
-        LOG.info("Event source connection established.");
+        log.info("Event source connection established.");
 
         this._messageReceived();
 
         this.checkerInterval = setInterval(() => {
           if (this.eventSource.readyState === 2) { // 2 == CLOSED
-            LOG.warn("Recovering connection....");
+            log.warn("Recovering connection....");
             this.start(this.eventCallback);
           }
         }, 1000);
@@ -208,7 +211,7 @@ export class CrownstoneSSE {
         this._messageReceived();
         if (event?.data) {
           let message = JSON.parse(event.data);
-          LOG.debug("Event received", message);
+          log.debug("Event received", message);
 
           this.eventCallback(message as any);
 
@@ -237,8 +240,8 @@ export class CrownstoneSSE {
       };
       this.eventSource.onerror = (event) => {
         clearInterval(this.checkerInterval);
-        LOG.warn("Eventsource error",event);
-        LOG.info("Reconnecting after error. Will start in 2 seconds.");
+        log.warn("Eventsource error",event);
+        log.info("Reconnecting after error. Will start in 2 seconds.");
         console.log("Something went wrong with the connection. Attempting reconnect...");
         this.reconnectTimeout = setTimeout(() => { this.start(this.eventCallback) }, 2000);
       }
