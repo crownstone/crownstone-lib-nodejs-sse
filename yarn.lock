@@ -16,11 +16,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
   integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
 
-aes-js@^3.1.1:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.1.2.tgz#db9aabde85d5caabbfc0d4f2a4446960f627146a"
-  integrity sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==
-
 async@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
@@ -103,12 +98,11 @@ cross-fetch@^3.0.4:
     node-fetch "2.6.0"
     whatwg-fetch "3.0.0"
 
-crownstone-core@^0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/crownstone-core/-/crownstone-core-0.7.5.tgz#bd7fc3fca226688154936f4e20a011de64334c27"
-  integrity sha512-Rv0iGG2Lke/X+Akxf2hfxNt/IyHSR0hFtVMGbtYCzz2Arj1Mo+HIiRJ+ebBISqxD6zN7EX9V9FvTxScdEb/s7Q==
+crownstone-logger@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/crownstone-logger/-/crownstone-logger-0.1.0.tgz#ef8989666b5ff2f1dc187483ab9c19e03f55b63c"
+  integrity sha512-YhvgY4l24QMpHey3KTs3+ZKJK67U6d9rDWFMg/1cc9lOpcjdmBHdUHWJN6PGcIM923QNKDTLie8+G0yyalOETA==
   dependencies:
-    aes-js "^3.1.1"
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
 
