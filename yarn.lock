@@ -98,10 +98,10 @@ cross-fetch@^3.0.4:
     node-fetch "2.6.0"
     whatwg-fetch "3.0.0"
 
-crownstone-logger@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/crownstone-logger/-/crownstone-logger-0.1.2.tgz#64dfb11acea3b7f5c68b81c03d61793c38cca5c5"
-  integrity sha512-o7aSRnQC/4qY329egXi8INJR8BKVDGwdAjFP+ZGJBF58kZnUKxomuhg2ZzBRB6443EeIk+dmMi+ytg5SM2mcyQ==
+crownstone-logger@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/crownstone-logger/-/crownstone-logger-0.1.4.tgz#00ba2d0367667fdc9306aa256b3bc704e1bbb7ed"
+  integrity sha512-B8S6lE1joWWA2bu8w908mz1g2qHNOCgzCLfGz2m1ATf/BM++EPn5ct9gYExWXGUHFXiV7veUubjBzW+grqREJA==
   dependencies:
     winston "^3.3.3"
     winston-daily-rotate-file "^4.5.0"
