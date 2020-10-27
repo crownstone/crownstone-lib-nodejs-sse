@@ -155,6 +155,7 @@ interface CrownstoneSwitchCommand {
   uid:         number,
   type:        "TURN_ON" | "TURN_OFF" | "PERCENTAGE"
   percentage?: number, // 0 .. 100
+  switchState?: number // 0 .. 100 --> THIS IS LEGACY ONLY, DO NOT USE THIS, IT WILL BE REMOVED ON THE NEXT APP RELEASE
 }
 
 ```
