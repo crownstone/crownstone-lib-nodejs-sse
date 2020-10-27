@@ -128,6 +128,8 @@ interface PingEvent {
 These notify actuators that they should so something. 
 
 A hub could use this to switch a Crownstone based on a call from the cloud.
+- (LEGACY) The [https://my.crownstone.rocks/api/Stones/id/setSwitchStateRemotely](https://my.crownstone.rocks/api/Stones/id/setSwitchStateRemotely) endpoint triggers the multiSwitch event.
+- The [https://my.crownstone.rocks/api/Stones/id/switch](https://my.crownstone.rocks/api/Stones/id/switch) endpoint triggers the multiSwitch event.
 - The [https://my.crownstone.rocks/api/Spheres/id/switchCrownstones](https://my.crownstone.rocks/api/Spheres/id/switchCrownstones) endpoint triggers the multiSwitch event.
 ```js
 
