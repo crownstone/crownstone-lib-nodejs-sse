@@ -128,21 +128,14 @@ interface PingEvent {
 These notify actuators that they should so something. 
 
 A hub could use this to switch a Crownstone based on a call from the cloud.
-- (legacy) The [https://my.crownstone.rocks/api/Stones/id/setSwitchStateRemotely](https://my.crownstone.rocks/api/Stones/{id}/setSwitchStateRemotely) endpoint triggers the switchCrownstone event.
 - The [https://my.crownstone.rocks/api/Spheres/id/switchCrownstones](https://my.crownstone.rocks/api/Spheres/id/switchCrownstones) endpoint triggers the multiSwitch event.
 ```js
-interface SwitchCrownstoneEvent {
-  type:        "command",
-  subType:     "switchCrownstone"
-  sphere:      SphereData,
-  crownstone:  LegacySwitchData,
-}
 
 interface MultiSwitchCrownstoneEvent {
   type:        "command",
   subType:     "multiSwitch"
   sphere:      SphereData,
-  switchData:  CrownstoneSwitchData[],
+  switchData:  CrownstoneSwitchCommand[],
 }
 
 // With subtypes:
@@ -153,17 +146,15 @@ interface SphereData {
   name: string,
 }
 
-interface CrownstoneData {
-  id:   string,
-  uid:  number,
-  name: string,
-  switchState: number | null, // 0 .. 1
-  macAddress: string,
+interface CrownstoneSwitchCommand {
+  id:          string,
+  name:        string,
+  macAddress:  string,
+  uid:         number,
+  type:        "TURN_ON" | "TURN_OFF" | "PERCENTAGE"
+  percentage?: number, // 0 .. 100
 }
 
-interface CrownstoneSwitchData extends CrownstoneData {
-  type: "TURN_ON" | "TURN_OFF" | "PERCENTAGE"
-}
 ```
 
 ### Presence events
@@ -226,7 +217,7 @@ interface SwitchStateUpdateEvent {
   type:        "switchStateUpdate",
   subType:     "stone",
   sphere:       SphereData,
-  crownstone:   CrownstoneData,
+  crownstone:   CrownstoneSwitchState,
 }
 
 // when the Crownstone's abilities have been updated
@@ -267,10 +258,11 @@ interface CrownstoneData {
   id:   string,
   uid:  number,
   name: string,
-  switchState: number | null,
   macAddress: string,
 }
-
+interface CrownstoneSwitchState extends CrownstoneData {
+  percentage: number, // 0 .. 100
+}
 interface AbilityData {
   type: string,
   enabled: boolean,
