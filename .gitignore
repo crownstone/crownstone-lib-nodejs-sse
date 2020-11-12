@@ -106,3 +106,5 @@ dist
 copyTypes.sh
 
 .idea
+
+test.js
