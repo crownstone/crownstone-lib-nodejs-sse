@@ -223,9 +223,7 @@ export class CrownstoneSSE {
                 return this.retryLogin()
                   .then(() => {
                     log.debug("Done...");
-                    return new Promise((resolve, reject) => {
-                      setTimeout(resolve, 2000);
-                    })
+                    return new Promise((resolve, reject) => { setTimeout(resolve, 2000); });
                   })
                   .then(() => {
                     log.debug("Retry with new token...");
@@ -236,21 +234,25 @@ export class CrownstoneSSE {
                   })
               }
               catch (e) {
-                this.eventCallback({
+                let errorEvent : SseEvent = {
                   type:     "system",
                   subType:  "COULD_NOT_REFRESH_TOKEN",
                   code:     401,
                   message:  "Token expired, autoreconnect tried to get a new one. This was not successful. Connection closed.",
-                });
+                };
+                log.error(errorEvent)
+                this.eventCallback(errorEvent);
               }
             }
             else {
-              this.eventCallback({
+              let errorEvent : SseEvent = {
                 type:     "system",
                 subType:  "COULD_NOT_REFRESH_TOKEN",
                 code:     401,
                 message:  "Token expired, autoconnect is disabled or does not have login credentials. Connection closed.",
-              });
+              };
+              log.error(errorEvent)
+              this.eventCallback(errorEvent);
             }
           }
         }
