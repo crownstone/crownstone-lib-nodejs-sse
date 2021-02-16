@@ -2,7 +2,7 @@ import Timeout = NodeJS.Timeout;
 
 const crypto = require('crypto');
 import EventSource from "eventsource"
-const shasum = crypto.createHash('sha1');
+
 import fetch from 'cross-fetch';
 import {Logger} from "./Logger";
 
@@ -61,6 +61,7 @@ export class CrownstoneSSE {
   }
 
   async login(email, password) {
+    const shasum = crypto.createHash('sha1');
     shasum.update(password);
     let hashedPassword = shasum.digest('hex');
     return await this.loginHashed(email, hashedPassword)
