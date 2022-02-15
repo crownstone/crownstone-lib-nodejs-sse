@@ -13,7 +13,7 @@ function sha1(str) {
 }
 
 let options : sseConstructorOptions = {
-  log: (filename) => { return Logger(path.join(__dirname, "CrownstoneSSE.ts")); },
+  log: Logger(path.join(__dirname, "CrownstoneSSE.ts")),
   sha1: sha1,
   fetch: fetch,
   EventSource: EventSource,
