@@ -15,6 +15,7 @@ Compile the ts files to get started:
 npm run build
 ```
 
+
 ## Usage
 
 There are two small examples showing you how to get started in the ./examples folder.
@@ -297,7 +298,42 @@ interface SphereData {
 
 
 
+## Cross platform
 
+This can be used by NodeJS and React Native.
+
+If you want to use it with NodeJS, you can use it as per the rest of the documentation.
+
+For React Native, you can inject the RN environment modules to use:
+
+```js
+const sha1 = require('sha-1'); // using sha-1 module from npm
+import RNEventSource from 'react-native-event-source'
+import { SSEGenerator } from "crownstone-sse/dist/CrownstoneSSE";
+
+const logger = {
+  error(...args) {},
+  warn(...args) {},
+  info(...args) {
+    console.log(...args);
+  },
+  debug(...args) {
+    console.log(...args);
+  },
+}
+
+let options =  {
+  log:         logger,
+  sha1:        sha1,
+  fetch:       fetch,
+  EventSource: RNEventSource,
+};
+
+export const CrownstoneSSE = SSEGenerator(options);
+
+let sse = new CrownstoneSSE();
+// from here on, it is the same as the rest of the documentation.
+```
 
 
 
