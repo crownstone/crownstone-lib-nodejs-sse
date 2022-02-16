@@ -127,6 +127,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
       throw "NO_CREDENTIALS";
     }
 
+
     setAccessToken(token) {
       this.accessToken = token;
     }
