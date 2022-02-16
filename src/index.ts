@@ -1,7 +1,7 @@
 /// <reference path="./declarations/declarations.d.ts" />
 
 import { CrownstoneSSE } from "./NodeSSE";
-import { SSEGenerator } from "./CrownstoneSSE";
+import { SseClassGenerator } from "./CrownstoneSSE";
 
 
-export { CrownstoneSSE, SSEGenerator };
+export { CrownstoneSSE, SseClassGenerator };
