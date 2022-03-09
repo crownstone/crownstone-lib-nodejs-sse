@@ -1,11 +1,14 @@
-import Timeout = NodeJS.Timeout;
-
-export const SSEGenerator = function(options: sseConstructorOptions) {
+export const SseClassGenerator = function(options: sseConstructorOptions) {
 
   const log         = options.log;
   const sha1        = options.sha1;
   const EventSource = options.EventSource;
   const fetch       = options.fetch;
+
+  const set_Timeout    = options.setTimeout    ?? setTimeout;
+  const set_Interval   = options.setInterval   ?? setInterval;
+  const clear_Timeout  = options.clearTimeout  ?? clearTimeout;
+  const clear_Interval = options.clearInterval ?? clearInterval;
 
   const defaultHeaders = {
     'Accept': 'application/json',
@@ -29,9 +32,9 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
 
     eventCallback    : (data: SseEvent) => void;
 
-    checkerInterval  : Timeout = null;
-    reconnectTimeout : Timeout = null;
-    pingTimeout      : Timeout = null;
+    checkerInterval  = null;
+    reconnectTimeout = null;
+    pingTimeout      = null;
 
     sse_url          = DEFAULT_URLS.sseUrl;
     login_url        = DEFAULT_URLS.loginUrl;
@@ -124,6 +127,7 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
       throw "NO_CREDENTIALS";
     }
 
+
     setAccessToken(token) {
       this.accessToken = token;
     }
@@ -144,8 +148,8 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
      * @private
      */
     _messageReceived() {
-      clearTimeout(this.pingTimeout);
-      this.pingTimeout = setTimeout(() => {
+      clear_Timeout(this.pingTimeout);
+      this.pingTimeout = set_Timeout(() => {
         if (this.eventCallback !== undefined) {
           this.start(this.eventCallback);
         }
@@ -154,9 +158,9 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
 
 
     _clearPendingActions() {
-      clearInterval(this.checkerInterval);
-      clearTimeout( this.reconnectTimeout);
-      clearTimeout( this.pingTimeout);
+      clear_Interval(this.checkerInterval);
+      clear_Timeout( this.reconnectTimeout);
+      clear_Timeout( this.pingTimeout);
     }
 
 
@@ -181,7 +185,7 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
 
           this._messageReceived();
 
-          this.checkerInterval = setInterval(() => {
+          this.checkerInterval = set_Interval(() => {
             if (this.eventSource.readyState === 2) { // 2 == CLOSED
               log.warn("Recovering connection....");
               this.start(this.eventCallback);
@@ -209,7 +213,7 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
                   return this.retryLogin()
                     .then(() => {
                       log.debug("Done...");
-                      return new Promise((resolve, reject) => { setTimeout(resolve, 2000); });
+                      return new Promise((resolve, reject) => { set_Timeout(resolve, 2000); });
                     })
                     .then(() => {
                       log.debug("Retry with new token...");
@@ -246,12 +250,12 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
 
 
         this.eventSource.addEventListener('error', (event) => {
-          clearInterval(this.checkerInterval);
-          clearTimeout(this.reconnectTimeout);
+          clear_Interval(this.checkerInterval);
+          clear_Timeout(this.reconnectTimeout);
           log.warn("Eventsource error",event);
           log.info("Reconnecting after error. Will start in 2 seconds.");
           this.stop();
-          this.reconnectTimeout = setTimeout(() => { this.start(this.eventCallback) }, 2000);
+          this.reconnectTimeout = set_Timeout(() => { this.start(this.eventCallback) }, 2000);
         });
 
       })
