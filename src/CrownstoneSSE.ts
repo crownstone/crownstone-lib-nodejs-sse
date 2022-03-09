@@ -25,7 +25,8 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
   return class CrownstoneSSE {
     log = log;
 
-    autoreconnect    : boolean       = false;
+    requireAuthentication : boolean = true;
+    autoreconnect         : boolean = false;
 
     eventSource      : any           = null;
     accessToken      : string | null = null;
@@ -43,11 +44,12 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
     cachedLoginData  : cachedLoginData = null;
 
     constructor( options? : sseOptions ) {
-      this.sse_url          = options && options.sseUrl       || DEFAULT_URLS.sseUrl;
-      this.login_url        = options && options.loginUrl     || DEFAULT_URLS.loginUrl;
-      this.hubLogin_baseUrl = options && options.hubLoginBase || DEFAULT_URLS.hubLoginBase;
+      this.sse_url               = options && options.sseUrl       || DEFAULT_URLS.sseUrl;
+      this.login_url             = options && options.loginUrl     || DEFAULT_URLS.loginUrl;
+      this.hubLogin_baseUrl      = options && options.hubLoginBase || DEFAULT_URLS.hubLoginBase;
       if (this.hubLogin_baseUrl.substr(-1,1) !== '/') { this.hubLogin_baseUrl += "/"; }
-      this.autoreconnect    = (options && options.autoreconnect !== undefined) ? options.autoreconnect : true;
+      this.autoreconnect         = (options && options.autoreconnect !== undefined) ? options.autoreconnect : true;
+      this.requireAuthentication = (options && options.requireAuthentication !== undefined) ? options.requireAuthentication : true;
     }
 
     async login(email, password) {
@@ -165,7 +167,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
 
 
     async start(eventCallback : (data : SseEvent) => void) : Promise<void> {
-      if (this.accessToken === null) {
+      if (this.accessToken === null && this.requireAuthentication === true) {
         throw "AccessToken is required. Use .setAccessToken() or .login() to set one."
       }
 
@@ -179,7 +181,12 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
       }
 
       return new Promise((resolve, reject) => {
-        this.eventSource = new EventSource(this.sse_url + "?accessToken=" + this.accessToken);
+        let url = this.sse_url;
+        if (this.requireAuthentication === true) {
+          url = this.sse_url + "?accessToken=" + this.accessToken;
+        }
+
+        this.eventSource = new EventSource(url);
         this.eventSource.addEventListener('open', (event) => {
           log.info("Event source connection established.");
 
