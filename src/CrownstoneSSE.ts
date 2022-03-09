@@ -250,6 +250,7 @@ export const SSEGenerator = function(options: sseConstructorOptions) {
           clearTimeout(this.reconnectTimeout);
           log.warn("Eventsource error",event);
           log.info("Reconnecting after error. Will start in 2 seconds.");
+          this.stop();
           this.reconnectTimeout = setTimeout(() => { this.start(this.eventCallback) }, 2000);
         });
 
