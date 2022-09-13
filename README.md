@@ -113,7 +113,7 @@ These are used to notify you of the opening, closing and any errors with the eve
 ```js
 interface SystemEvent {
   type:    "system",
-  subType:  "TOKEN_EXPIRED" | "NO_ACCESS_TOKEN" | "NO_CONNECTION" | "STREAM_START" | "STREAM_CLOSED",
+  subType:  "TOKEN_EXPIRED" | "INVALID_ACCESS_TOKEN" | "NO_ACCESS_TOKEN" | "NO_CONNECTION" | "STREAM_START" | "STREAM_CLOSED",
   code:     number,
   message:  string,
 }
