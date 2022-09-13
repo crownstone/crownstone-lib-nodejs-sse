@@ -1,3 +1,5 @@
+import {config} from "./config";
+
 export interface SseClassInterface {
   login(email, password):                     Promise<void>,
   loginHashed(email, sha1passwordHash):       Promise<void>,
@@ -64,7 +66,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
       this.hubLogin_baseUrl      = options?.hubLoginBase ?? DEFAULT_URLS.hubLoginBase;
       this.projectName           = options?.projectName  ?? "no_project_name";
 
-      this.projectName = `crownstone-lib-nodejs-sse-${this.projectName}`;
+      this.projectName = `crownstone-lib-nodejs-sse-${config.version}-${this.projectName}`;
 
       if (this.hubLogin_baseUrl.substr(-1,1) !== '/') { this.hubLogin_baseUrl += "/"; }
       this.autoreconnect         = (options && options.autoreconnect !== undefined) ? options.autoreconnect : true;
