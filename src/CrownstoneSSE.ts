@@ -1,4 +1,18 @@
-export const SseClassGenerator = function(options: sseConstructorOptions) {
+export interface SseClassInterface {
+  login(email, password):                     Promise<void>,
+  loginHashed(email, sha1passwordHash):       Promise<void>,
+  hubLogin(hubId : string, hubToken: string): Promise<void>,
+  setAccessToken(token):                      void,
+
+  start(eventCallback : (data : SseEvent) => void) : Promise<void>,
+  retryWithNewAccessToken()                        : Promise<void> | void,
+  stop(): void,
+
+  log: any
+}
+
+
+export const SseClassGenerator = function(options: sseConstructorOptions) : { new(options?: sseOptions): SseClassInterface; prototype: SseClassInterface } {
 
   const log         = options.log;
   const sha1        = options.sha1;
@@ -45,10 +59,10 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
     cachedLoginData  : cachedLoginData = null;
 
     constructor( options? : sseOptions ) {
-      this.sse_url               = options && options.sseUrl       || DEFAULT_URLS.sseUrl;
-      this.login_url             = options && options.loginUrl     || DEFAULT_URLS.loginUrl;
-      this.hubLogin_baseUrl      = options && options.hubLoginBase || DEFAULT_URLS.hubLoginBase;
-      this.projectName           = options && options.projectName  || "no_project_name";
+      this.sse_url               = options?.sseUrl       ?? DEFAULT_URLS.sseUrl;
+      this.login_url             = options?.loginUrl     ?? DEFAULT_URLS.loginUrl;
+      this.hubLogin_baseUrl      = options?.hubLoginBase ?? DEFAULT_URLS.hubLoginBase;
+      this.projectName           = options?.projectName  ?? "no_project_name";
 
       this.projectName = `crownstone-lib-nodejs-sse-${this.projectName}`;
 
@@ -238,7 +252,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
       })
     }
 
-    retryWithNewAccessToken() {
+    retryWithNewAccessToken() : Promise<void> | void{
       this.eventSource.close();
       this._clearPendingActions();
       if (this.autoreconnect && this.cachedLoginData) {
