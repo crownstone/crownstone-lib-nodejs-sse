@@ -20,7 +20,8 @@ interface sseOptions {
   loginUrl?:      string,
   hubLoginBase?:  string,
   autoreconnect?: boolean,
-  requireAuthentication?: boolean
+  requireAuthentication?: boolean,
+  projectName?:   string,
 }
 
 interface cachedLoginData {

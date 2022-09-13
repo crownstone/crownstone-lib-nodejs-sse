@@ -36,6 +36,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
     checkerInterval  = null;
     reconnectTimeout = null;
     pingTimeout      = null;
+    projectName      = null;
 
     sse_url          = DEFAULT_URLS.sseUrl;
     login_url        = DEFAULT_URLS.loginUrl;
@@ -47,6 +48,10 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
       this.sse_url               = options && options.sseUrl       || DEFAULT_URLS.sseUrl;
       this.login_url             = options && options.loginUrl     || DEFAULT_URLS.loginUrl;
       this.hubLogin_baseUrl      = options && options.hubLoginBase || DEFAULT_URLS.hubLoginBase;
+      this.projectName           = options && options.projectName  || "no_project_name";
+
+      this.projectName = `crownstone-lib-nodejs-sse-${this.projectName}`;
+
       if (this.hubLogin_baseUrl.substr(-1,1) !== '/') { this.hubLogin_baseUrl += "/"; }
       this.autoreconnect         = (options && options.autoreconnect !== undefined) ? options.autoreconnect : true;
       this.requireAuthentication = (options && options.requireAuthentication !== undefined) ? options.requireAuthentication : true;
@@ -183,7 +188,7 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
       return new Promise((resolve, reject) => {
         let url = this.sse_url;
         if (this.requireAuthentication === true) {
-          url = this.sse_url + "?accessToken=" + this.accessToken;
+          url = this.sse_url + "?accessToken=" + this.accessToken + "&projectName=" + this.projectName;
         }
 
         this.eventSource = new EventSource(url);
@@ -212,45 +217,10 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
             this.eventCallback(message as any);
             // attempt to automatically reconnect if the token has expired.
             if (message.type === 'system' && message.code === 401 && message.subType == "TOKEN_EXPIRED") {
-              this.eventSource.close();
-              this._clearPendingActions();
-              if (this.autoreconnect && this.cachedLoginData) {
-                try {
-                  log.debug("Attempting to login again since our token expired...");
-                  return this.retryLogin()
-                    .then(() => {
-                      log.debug("Done...");
-                      return new Promise((resolve, reject) => { set_Timeout(resolve, 2000); });
-                    })
-                    .then(() => {
-                      log.debug("Retry with new token...");
-                      return this.start(this.eventCallback);
-                    })
-                    .then(() => {
-                      log.debug("Done...");
-                    })
-                }
-                catch (e) {
-                  let errorEvent : SseEvent = {
-                    type:     "system",
-                    subType:  "COULD_NOT_REFRESH_TOKEN",
-                    code:     401,
-                    message:  "Token expired, autoreconnect tried to get a new one. This was not successful. Connection closed.",
-                  };
-                  log.error(errorEvent)
-                  this.eventCallback(errorEvent);
-                }
-              }
-              else {
-                let errorEvent : SseEvent = {
-                  type:     "system",
-                  subType:  "COULD_NOT_REFRESH_TOKEN",
-                  code:     401,
-                  message:  "Token expired, autoconnect is disabled or does not have login credentials. Connection closed.",
-                };
-                log.error(errorEvent)
-                this.eventCallback(errorEvent);
-              }
+              this.retryWithNewAccessToken()
+            }
+            if (message.type === 'system' && message.code === 401 && message.subType == "INVALID_ACCESS_TOKEN") {
+              this.retryWithNewAccessToken()
             }
           }
         });
@@ -267,6 +237,47 @@ export const SseClassGenerator = function(options: sseConstructorOptions) {
 
       })
     }
-  }
 
+    retryWithNewAccessToken() {
+      this.eventSource.close();
+      this._clearPendingActions();
+      if (this.autoreconnect && this.cachedLoginData) {
+        try {
+          log.debug("Attempting to login again since our token expired...");
+          return this.retryLogin()
+            .then(() => {
+              log.debug("Done...");
+              return new Promise((resolve, reject) => { set_Timeout(resolve, 2000); });
+            })
+            .then(() => {
+              log.debug("Retry with new token...");
+              return this.start(this.eventCallback);
+            })
+            .then(() => {
+              log.debug("Done...");
+            })
+        }
+        catch (e) {
+          let errorEvent : SseEvent = {
+            type:     "system",
+            subType:  "COULD_NOT_REFRESH_TOKEN",
+            code:     401,
+            message:  "Token expired, autoreconnect tried to get a new one. This was not successful. Connection closed.",
+          };
+          log.error(errorEvent)
+          this.eventCallback(errorEvent);
+        }
+      }
+      else {
+        let errorEvent : SseEvent = {
+          type:     "system",
+          subType:  "COULD_NOT_REFRESH_TOKEN",
+          code:     401,
+          message:  "Token expired, autoconnect is disabled or does not have login credentials. Connection closed.",
+        };
+        log.error(errorEvent)
+        this.eventCallback(errorEvent);
+      }
+    }
+  }
 }
