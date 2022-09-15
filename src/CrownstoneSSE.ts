@@ -38,8 +38,16 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
     hubLoginBase: "https://cloud.crownstone.rocks/api/Hubs/"
   }
 
+
   return class CrownstoneSSE {
     log = log;
+
+    listeners = {
+      open:    ()      => {},
+      message: (event) => {},
+      error:   (error) => {}
+    }
+
 
     requireAuthentication : boolean = true;
     autoreconnect         : boolean = false;
@@ -157,11 +165,18 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
 
 
     stop() {
-      this._clearPendingActions()
       this.autoreconnect = false;
+      this.closeEventSource();
+    }
+
+    closeEventSource() {
+      this._clearPendingActions();
       if (this.eventSource !== null) {
-        this.eventSource.removeAllListeners();
+        this.eventSource.removeEventListener('open',    this.listeners.open);
+        this.eventSource.removeEventListener('message', this.listeners.message);
+        this.eventSource.removeEventListener('error',   this.listeners.error);
         this.eventSource.close();
+        this.eventSource = null;
       }
     }
 
@@ -195,10 +210,9 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
       this.eventCallback = eventCallback;
 
       this._clearPendingActions();
-
       if (this.eventSource !== null) {
         log.info("Event source closed before starting again.");
-        this.eventSource.close();
+        this.closeEventSource();
       }
 
       return new Promise((resolve, reject) => {
@@ -208,7 +222,8 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
         }
 
         this.eventSource = new EventSource(url);
-        this.eventSource.addEventListener('open', (event) => {
+
+        this.listeners.open = () => {
           log.info("Event source connection established.");
 
           this._messageReceived();
@@ -221,9 +236,10 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
           }, 1000);
 
           resolve();
-        });
+        };
 
-        this.eventSource.addEventListener('message', (event) => {
+
+        this.listeners.message = (event) => {
           // bump the heartbeat timer.
           this._messageReceived();
           if (event?.data) {
@@ -239,24 +255,26 @@ export const SseClassGenerator = function(options: sseConstructorOptions) : { ne
               this.retryWithNewAccessToken()
             }
           }
-        });
+        }
 
-
-        this.eventSource.addEventListener('error', (event) => {
+        this.listeners.error = (error) => {
           clear_Interval(this.checkerInterval);
           clear_Timeout(this.reconnectTimeout);
-          log.warn("Eventsource error",event);
+          log.warn("Eventsource error",error);
           log.info("Reconnecting after error. Will start in 2 seconds.");
-          this.stop();
+          this.closeEventSource();
           this.reconnectTimeout = set_Timeout(() => { this.start(this.eventCallback) }, 2000);
-        });
+        }
+
+        this.eventSource.addEventListener('open',    this.listeners.open);
+        this.eventSource.addEventListener('message', this.listeners.message);
+        this.eventSource.addEventListener('error',   this.listeners.error);
 
       })
     }
 
     retryWithNewAccessToken() : Promise<void> | void{
-      this.eventSource.close();
-      this._clearPendingActions();
+      this.closeEventSource();
       if (this.autoreconnect && this.cachedLoginData) {
         try {
           log.debug("Attempting to login again since our token expired...");
