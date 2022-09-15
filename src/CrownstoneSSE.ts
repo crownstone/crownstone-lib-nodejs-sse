@@ -9,6 +9,7 @@ export interface SseClassInterface {
   start(eventCallback : (data : SseEvent) => void) : Promise<void>,
   retryWithNewAccessToken()                        : Promise<void> | void,
   stop(): void,
+  closeEventSource(): void,
 
   log: any
 }
