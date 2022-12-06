@@ -1,6 +1,6 @@
 # crownstone-lib-nodejs-sse
 
-SSE module for the nodejs libs. This is a small library to provide code with Server-Sent Enents (SSE) events from the Crownstone cloud. SSE is a server push technology.
+SSE module for the nodejs libs. This is a small library to provide code with Server-Sent Events (SSE) events from the Crownstone cloud. SSE is a server push technology.
 
 # Overview of the nodejs modules
 
