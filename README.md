@@ -1,5 +1,14 @@
 # crownstone-lib-nodejs-sse
-Tiny library to provide you with the SSE events from the Crownstone cloud.
+
+SSE module for the nodejs libs. This is a small library to provide code with Server-Sent Enents (SSE) events from the Crownstone cloud. SSE is a server push technology.
+
+# Overview of the nodejs modules
+
+- https://github.com/crownstone/crownstone-lib-nodejs-core
+- https://github.com/crownstone/crownstone-lib-nodejs-uart
+- https://github.com/crownstone/crownstone-lib-nodejs-ble
+- https://github.com/crownstone/crownstone-lib-nodejs-cloud
+- https://github.com/crownstone/crownstone-lib-nodejs-sse
 
 ## Installation
 
