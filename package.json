@@ -10,7 +10,7 @@
   "dependencies": {
     "cross-fetch": "^3.0.4",
     "crownstone-logger": "^0.1.4",
-    "eventsource": "^1.0.7",
+    "eventsource": "^2.0.2",
     "rimraf": "^3.0.2",
     "typescript": "^3.7.5"
   },
